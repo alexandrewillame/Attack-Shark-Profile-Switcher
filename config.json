@@ -1,0 +1,10 @@
+{
+  "default_profile": 1,
+  "game_profile": 2,
+  "poll_seconds": 2,
+  "popup_enabled": true,
+  "popup_duration_ms": 10000,
+  "games": [
+    "cs2.exe"
+  ]
+}

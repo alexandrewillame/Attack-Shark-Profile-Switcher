@@ -1,0 +1,21 @@
+# Runtime dependencies for the Attack Shark V8 profile switcher.
+# Install with:  python -m pip install -r requirements.txt
+#
+# tkinter is NOT listed here: it ships with CPython on Windows, but it is an
+# optional component of the installer. If "import tkinter" fails, re-run the
+# Python installer and tick "tcl/tk and IDLE" - pip cannot supply it.
+#
+# The USB HID layer (winhid.py) is pure ctypes against the Windows API, so there
+# is deliberately no hidapi dependency and nothing to compile.
+
+psutil>=5.9         # detects running game processes
+pystray>=0.19       # system tray icon and menu
+Pillow>=9.0         # tray icon and the profile-switch popup
+
+# Not required to run the switcher. Only needed to re-capture the mouse
+# protocol (capture/capture.py) if a firmware update ever breaks it:
+#
+#   python -m pip install "frida<17"    # Python 3.10 or older
+#   python -m pip install frida         # Python 3.11+
+#
+# frida 17+ imports typing.NotRequired, which only exists on Python 3.11+.
