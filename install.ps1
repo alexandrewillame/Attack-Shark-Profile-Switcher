@@ -7,8 +7,8 @@
     Finds a suitable Python (3.9+, 64-bit), offers to install one via winget if
     there isn't one, installs the packages from requirements.txt, verifies
     everything imports and that the mouse is reachable, enables start at boot by
-    handing off to enable_start_at_boot.ps1, adds a desktop shortcut, then
-    starts the app.
+    handing off to enable_start_at_boot.ps1, adds a desktop shortcut and a Start
+    Menu shortcut, then starts the app.
 
     Safe to re-run - it skips whatever is already in place.
 
@@ -27,6 +27,9 @@
 .PARAMETER NoDesktopShortcut
     Don't add the "Attack Shark Profile Switcher" desktop shortcut.
 
+.PARAMETER NoStartMenuShortcut
+    Don't add the "Attack Shark Profile Switcher" Start Menu shortcut.
+
 .PARAMETER NoRun
     Don't start the app after installing. By default it starts automatically -
     if a copy is already running, the single-instance lock makes this a no-op.
@@ -43,6 +46,7 @@ param(
     [switch]$WithCapture,
     [switch]$NoStartAtBoot,
     [switch]$NoDesktopShortcut,
+    [switch]$NoStartMenuShortcut,
     [switch]$NoRun
 )
 
@@ -82,6 +86,35 @@ function Test-PythonCandidate {
     } catch {
         return $null
     }
+}
+
+function New-AppShortcut {
+    <#
+    Creates (or overwrites in place) a .lnk in $FolderPath that runs
+    run_now.bat with logo.ico as its icon. Shared by the desktop and Start Menu
+    steps below, which differ only in destination folder.
+    #>
+    param([string]$FolderPath)
+    $runNow = Join-Path $here 'run_now.bat'
+    if (-not (Test-Path $runNow)) {
+        throw "run_now.bat not found in $here"
+    }
+    $iconPath = Join-Path $here 'logo.ico'
+    $shortcutPath = Join-Path $FolderPath 'Attack Shark Profile Switcher.lnk'
+    $wshShell = New-Object -ComObject WScript.Shell
+    $shortcut = $wshShell.CreateShortcut($shortcutPath)
+    $shortcut.TargetPath = $runNow
+    # Without this, the shortcut's "start in" is $FolderPath, and run_now.bat's
+    # relative "switcher.py" argument would resolve there instead of $here.
+    $shortcut.WorkingDirectory = $here
+    $shortcut.Description = 'Start the Attack Shark V8 profile switcher'
+    if (Test-Path $iconPath) {
+        $shortcut.IconLocation = "$iconPath,0"
+    } else {
+        Write-Warning "logo.ico not found in $here - using the default .bat icon"
+    }
+    $shortcut.Save()
+    return $shortcutPath
 }
 
 function Find-Python {
@@ -227,36 +260,35 @@ if ($NoDesktopShortcut) {
     Write-Output '   skipped (-NoDesktopShortcut)'
 } else {
     Write-Step 'Desktop shortcut'
-    $runNow = Join-Path $here 'run_now.bat'
-    $iconPath = Join-Path $here 'logo.ico'
-    if (-not (Test-Path $runNow)) {
-        Write-Bad "run_now.bat not found in $here"
-    } else {
-        try {
-            $desktop = [Environment]::GetFolderPath('Desktop')
-            $shortcutPath = Join-Path $desktop 'Attack Shark Profile Switcher.lnk'
-            $wshShell = New-Object -ComObject WScript.Shell
-            $shortcut = $wshShell.CreateShortcut($shortcutPath)
-            $shortcut.TargetPath = $runNow
-            # Without this, the shortcut's "start in" is the Desktop folder, and
-            # run_now.bat's relative "switcher.py" argument would resolve there.
-            $shortcut.WorkingDirectory = $here
-            $shortcut.Description = 'Start the Attack Shark V8 profile switcher'
-            if (Test-Path $iconPath) {
-                $shortcut.IconLocation = "$iconPath,0"
-            } else {
-                Write-Warning "logo.ico not found in $here - using the default .bat icon"
-            }
-            $shortcut.Save()
-            Write-Ok $shortcutPath
-            $shortcutCreated = $true
-        } catch {
-            Write-Bad "could not create the desktop shortcut: $_"
-        }
+    try {
+        $path = New-AppShortcut -FolderPath ([Environment]::GetFolderPath('Desktop'))
+        Write-Ok $path
+        $shortcutCreated = $true
+    } catch {
+        Write-Bad "could not create the desktop shortcut: $_"
     }
 }
 
-# --- 7. run now --------------------------------------------------------------
+# --- 7. start menu shortcut ---------------------------------------------------
+
+$startMenuShortcutCreated = $false
+if ($NoStartMenuShortcut) {
+    Write-Step 'Start Menu shortcut'
+    Write-Output '   skipped (-NoStartMenuShortcut)'
+} else {
+    Write-Step 'Start Menu shortcut'
+    try {
+        # Per-user Programs folder - no admin rights needed, same reasoning as
+        # using the Startup folder instead of Task Scheduler for start-at-boot.
+        $path = New-AppShortcut -FolderPath ([Environment]::GetFolderPath('Programs'))
+        Write-Ok $path
+        $startMenuShortcutCreated = $true
+    } catch {
+        Write-Bad "could not create the Start Menu shortcut: $_"
+    }
+}
+
+# --- 8. run now --------------------------------------------------------------
 
 $appStarted = $false
 if ($NoRun) {
@@ -301,6 +333,8 @@ if ($appStarted) {
     Write-Output '  4. Start it now, without waiting for a login:'
     if ($shortcutCreated) {
         Write-Output '       double-click "Attack Shark Profile Switcher" on the desktop'
+    } elseif ($startMenuShortcutCreated) {
+        Write-Output '       find "Attack Shark Profile Switcher" in the Start Menu'
     } else {
         Write-Output '       run_now.bat'
     }
@@ -311,6 +345,10 @@ if ($bootEnabled) {
 } else {
     Write-Output '  To start it at login:  enable_start_at_boot.bat'
 }
-if ($shortcutCreated) {
-    Write-Output '  A desktop shortcut, "Attack Shark Profile Switcher", starts it any time.'
+if ($shortcutCreated -and $startMenuShortcutCreated) {
+    Write-Output '  A "Attack Shark Profile Switcher" shortcut is on the desktop and in the Start Menu.'
+} elseif ($shortcutCreated) {
+    Write-Output '  A "Attack Shark Profile Switcher" shortcut is on the desktop.'
+} elseif ($startMenuShortcutCreated) {
+    Write-Output '  A "Attack Shark Profile Switcher" shortcut is in the Start Menu.'
 }

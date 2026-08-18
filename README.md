@@ -38,8 +38,9 @@ On a new machine, double-click **`install.bat`** (or run
 4. verifies the imports and that the mouse is actually reachable;
 5. **enables start at boot**;
 6. **adds a desktop shortcut**, using `logo.ico`, that runs `run_now.bat`;
-7. **starts the app**;
-8. prints the remaining steps.
+7. **adds the same shortcut to the Start Menu**;
+8. **starts the app**;
+9. prints the remaining steps.
 
 It's safe to re-run — anything already in place is skipped or overwritten in
 place (never duplicated), and starting it again while it's already running is a
@@ -52,11 +53,12 @@ harmless no-op (see *single copy* below).
 | `-WithCapture` | Also install `frida`, needed only to re-capture the mouse protocol. |
 | `-NoStartAtBoot` | Install the dependencies but don't enable start at boot. |
 | `-NoDesktopShortcut` | Install the dependencies but don't add the desktop shortcut. |
+| `-NoStartMenuShortcut` | Install the dependencies but don't add the Start Menu shortcut. |
 | `-NoRun` | Install the dependencies but don't start the app. |
 
 If enabling start at boot fails, the install is still reported as successful —
 the dependencies are in place, and `enable_start_at_boot.bat` will retry it. The
-same applies if the shortcut or the run fails: `run_now.bat` covers both.
+same applies if a shortcut or the run fails: `run_now.bat` covers all three.
 
 Doing it by hand instead:
 
@@ -90,8 +92,8 @@ Modify, and tick *tcl/tk and IDLE*.
    puts it back.
 
 `install.bat` has already started it, set it to start at every login, and put a
-shortcut on your desktop. To change any of that, see *Start at boot* below, or
-run `run_now.bat` by hand.
+shortcut on your desktop and in the Start Menu. To change any of that, see
+*Start at boot* below, or run `run_now.bat` by hand.
 
 ## Daily use
 
@@ -254,7 +256,7 @@ against `FINDINGS.md`.
 | `switcher.py` | Process watcher and tray app |
 | `overlay.py` | The profile-switch popup (also runnable standalone to preview it) |
 | `detect_games.py` | Builds a games list from installed Steam/Epic titles (tray: "Detect games") |
-| `install.ps1` / `install.bat` | First-time install: Python, packages, start at boot, desktop shortcut, then run |
+| `install.ps1` / `install.bat` | First-time install: Python, packages, start at boot, desktop + Start Menu shortcuts, then run |
 | `requirements.txt` | The package list |
 | `enable_start_at_boot.ps1` / `.bat` | Adds the login shortcut |
 | `disable_start_at_boot.ps1` / `.bat` | Removes every autostart entry pointing at this tool |
