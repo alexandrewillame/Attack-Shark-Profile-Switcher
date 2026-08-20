@@ -285,7 +285,7 @@ def run_tray(switcher: Switcher, popup: overlay_module.Overlay) -> None:
                        else "desktop"))
         return f"Attack Shark V8 - Profile {switcher.applied or '?'} ({state})"
 
-    logo_path = os.path.join(HERE, "logo.png")
+    logo_path = os.path.join(HERE, "assets", "logo.png")
     icon_image = Image.open(logo_path)
 
     icon = pystray.Icon(
@@ -449,7 +449,7 @@ def main() -> int:
     # surfaces any initialisation failure at startup instead of mid-game.
     popup = overlay_module.Overlay(
         duration_ms=config["popup_duration_ms"],
-        logo_path=os.path.join(HERE, "logo.png"),
+        logo_path=os.path.join(HERE, "assets", "logo.png"),
         enabled=config["popup_enabled"])
     popup.start()
     switcher._on_game_switch = lambda profile, context: popup.show(

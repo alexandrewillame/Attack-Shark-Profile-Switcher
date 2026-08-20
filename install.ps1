@@ -91,7 +91,7 @@ function Test-PythonCandidate {
 function New-AppShortcut {
     <#
     Creates (or overwrites in place) a .lnk in $FolderPath that runs
-    run_now.bat with logo.ico as its icon. Shared by the desktop and Start Menu
+    run_now.bat with assets/logo.ico as its icon. Shared by the desktop and Start Menu
     steps below, which differ only in destination folder.
     #>
     param([string]$FolderPath)
@@ -99,7 +99,7 @@ function New-AppShortcut {
     if (-not (Test-Path $runNow)) {
         throw "run_now.bat not found in $here"
     }
-    $iconPath = Join-Path $here 'logo.ico'
+    $iconPath = Join-Path $here 'assets' 'logo.ico'
     $shortcutPath = Join-Path $FolderPath 'Attack Shark Profile Switcher.lnk'
     $wshShell = New-Object -ComObject WScript.Shell
     $shortcut = $wshShell.CreateShortcut($shortcutPath)
@@ -111,7 +111,7 @@ function New-AppShortcut {
     if (Test-Path $iconPath) {
         $shortcut.IconLocation = "$iconPath,0"
     } else {
-        Write-Warning "logo.ico not found in $here - using the default .bat icon"
+        Write-Warning "assets/logo.ico not found in $here - using the default .bat icon"
     }
     $shortcut.Save()
     return $shortcutPath

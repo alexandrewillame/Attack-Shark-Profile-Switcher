@@ -313,7 +313,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     overlay = Overlay(logo_path=os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "logo.png"))
+        os.path.dirname(os.path.abspath(__file__)), "assets", "logo.png"))
     overlay.start()
     overlay.show(head, sub)
     time.sleep((overlay.duration_ms + overlay.fade_ms) / 1000 + 0.6)
