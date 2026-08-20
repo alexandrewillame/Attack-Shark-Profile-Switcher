@@ -4,15 +4,16 @@
 
 For Attack Shark mice, tested and working on the Attack Shark V8.
 
-Your mouse can store several onboard profiles (DPI, polling rate, button
-mapping), but switching between them by hand is a hassle. This tool switches
-automatically: it watches for a game to start, flips the mouse to your gaming
+The Attack Shark V8 mouse have several onboard profiles (DPI, polling rate, 
+button mapping), but switching between them is only allowed manually via 
+the Attack Shark Mouse Hub software. This tool switches automatically: 
+it automatically detects when you launch a game and switch to your gaming
 profile (e.g. 8KHz polling), and flips it back to your desktop profile (e.g.
 125Hz, for battery life) when you quit.
 
-It talks to the mouse directly over USB. The Attack Shark Hub only needs to
-be open when you're *setting up* what each profile contains — close it
-before you play.
+It talks to the mouse directly over USB. The Attack Shark Hub is only needed
+to set up what each profile contains, it is not necessary when this tool is 
+running although they can both be used at the same time).
 
 ## Requirements
 
@@ -27,16 +28,6 @@ Double-click **`install.bat`**. It installs everything needed, sets the app
 to start automatically when you log in, adds a shortcut to your desktop and
 Start Menu, and launches it.
 
-It's safe to re-run any time — nothing gets duplicated, and running it while
-the app is already open is a harmless no-op.
-
-Prefer not to auto-start at login, or skip the shortcuts? Run from a terminal
-instead:
-
-```bash
-powershell -ExecutionPolicy Bypass -File install.ps1 -NoStartAtBoot -NoDesktopShortcut -NoStartMenuShortcut
-```
-
 ## Setup
 
 1. In the ATTACK SHARK MOUSE HUB, configure Profile 1 (desktop) and Profile 2
@@ -45,35 +36,32 @@ powershell -ExecutionPolicy Bypass -File install.ps1 -NoStartAtBoot -NoDesktopSh
    installed Steam and Epic library and fills in `config.json` for you.
    **Double-check the result**: the guess is a heuristic and can occasionally
    pick the wrong `.exe`. Add anything it missed by hand.
-3. Launch a game and confirm the popup appears and your pointer feels
-   different. If not, see *Notes and limitations* below.
+3. Launch a game and confirm the popup overlay appears at the bottom right
+   corner of the screen
 
 ## How to use
 
-A tray icon shows the active profile — grey on the desktop, green in a game.
-Right-click it for the menu:
+A tray icon shows the active profile:
 
 ![Tray menu](/assets/screenshot1.png?raw=true "Tray menu")
 
 - **Auto (game-aware)** — the normal mode.
 - **Pin to Profile 1–4** — hold one profile and suspend automatic switching.
-- **Show popups** — mute or unmute the popup for this session.
+- **Show popups** — mute or unmute the popup overlay for this session.
 - **Start at boot** — check or uncheck to control whether it launches at login.
 - **Detect games** — rescan for installed games and add any new ones.
 - **Edit games list** — opens `config.json`.
 - **Open log** — for troubleshooting.
 - **Quit** — also puts the mouse back on your desktop profile.
 
-## The popup
+## The popup overlay
 
 When a game starts or exits, a small card appears briefly in the corner of
 your screen, naming the new profile and the game (or "Desktop"):
 
 ![Profile switch popup](/assets/screenshot2.png?raw=true "Profile switch popup")
 
-It only appears on an actual game transition — not at sign-in, not on quit,
-not when you pin a profile from the tray menu — and it's designed to never
-steal focus from your game.
+It only appears on an actual game transition — entering or leaving a game.
 
 ## config.json
 
@@ -83,7 +71,7 @@ steal focus from your game.
   "game_profile": 2,
   "poll_seconds": 2,
   "popup_enabled": true,
-  "popup_duration_ms": 1800,
+  "popup_duration_ms": 10000,
   "games": ["cs2.exe"]
 }
 ```
@@ -102,10 +90,8 @@ Save the file as UTF-8.
   seconds of the game starting.
 - **Only one copy runs at a time.** Launching it again while it's already
   running (e.g. double-clicking the shortcut twice) is harmless.
-- **Close the Attack Shark Hub while playing** — if left open, it can
-  reassert its own profile over this tool's.
 - **The popup won't draw over exclusive-fullscreen games** — borderless
-  windowed (what most games default to) is fine.
+  windowed is also fine.
 - Logs are at `%LOCALAPPDATA%\shark-profile-switcher\switcher.log`, also
   reachable from the tray menu's **Open log**.
 
@@ -119,8 +105,9 @@ needed, and no scheduled task or registry entry left behind.
 
 This tool doesn't use an official API — it was built by observing what the
 Attack Shark Hub sends to the mouse. A firmware or Hub update could change
-that and break switching. If that happens, open an issue; recapturing the
-protocol is documented in `capture/FINDINGS.md`.
+that and break switching. Tested and working on Attack Shark V8 with 
+Mouse Firmware version V3.03, receiver firmware version v3.00 and 
+Attack Shark Mouse Hub V1.0.2.0.
 
 ## Command line
 
