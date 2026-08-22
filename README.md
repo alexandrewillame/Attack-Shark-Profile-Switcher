@@ -81,33 +81,17 @@ a game's executable, launch it and look in Task Manager → Details.
 
 Save the file as UTF-8.
 
-## Notes and limitations
+## Notes
 
-- **Reading the current profile needs the mouse awake.** Switching always
-  works, but `sharkctl.py get` may report "unknown" if the mouse has gone to
-  sleep — that's just the read-back, not the switch itself.
-- **Detection checks every 2 seconds**, so a switch lands within a couple of
-  seconds of the game starting.
-- **Only one copy runs at a time.** Launching it again while it's already
-  running (e.g. double-clicking the shortcut twice) is harmless.
-- **The popup won't draw over exclusive-fullscreen games** — borderless
-  windowed is also fine.
-- Logs are at `%LOCALAPPDATA%\shark-profile-switcher\switcher.log`, also
-  reachable from the tray menu's **Open log**.
+- Tested and working on Attack Shark V8 with 
+Mouse Firmware version V3.03, receiver firmware version v3.00 and 
+Attack Shark Mouse Hub V1.0.2.0.
 
 ## Start at boot
 
 Toggle this any time from the tray menu's **Start at boot** checkbox. It only
 adds or removes a shortcut in your Windows Startup folder — no admin rights
 needed, and no scheduled task or registry entry left behind.
-
-## If it stops working after a mouse/Hub update
-
-This tool doesn't use an official API — it was built by observing what the
-Attack Shark Hub sends to the mouse. A firmware or Hub update could change
-that and break switching. Tested and working on Attack Shark V8 with 
-Mouse Firmware version V3.03, receiver firmware version v3.00 and 
-Attack Shark Mouse Hub V1.0.2.0.
 
 ## Command line
 
