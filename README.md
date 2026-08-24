@@ -11,9 +11,10 @@ it automatically detects when you launch a game and switch to your gaming
 profile (e.g. 8KHz polling), and flips it back to your desktop profile (e.g.
 125Hz, for battery life) when you quit.
 
-It talks to the mouse directly over USB. The Attack Shark Hub is only needed
-to set up what each profile contains, it is not necessary when this tool is 
-running although they can both be used at the same time).
+It talks to the mouse directly over its USB receiver. The Attack Shark Hub 
+software is only needed to set up what each profile contains, it is not 
+necessary when this tool is running although they can both be used at 
+the same time.
 
 ## Requirements
 
@@ -83,9 +84,8 @@ Save the file as UTF-8.
 
 ## Notes
 
-- Tested and working on Attack Shark V8 with 
-Mouse Firmware version V3.03, receiver firmware version v3.00 and 
-Attack Shark Mouse Hub V1.0.2.0.
+- Tested and working on Attack Shark V8 with Mouse Firmware version V3.03,
+  Receiver firmware version v3.00 and Attack Shark Mouse Hub V1.0.2.0.
 
 ## Start at boot
 
