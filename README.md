@@ -80,8 +80,6 @@ It only appears on an actual game transition — entering or leaving a game.
 `games` are executable names, matched case-insensitively — no paths. To find
 a game's executable, launch it and look in Task Manager → Details.
 
-Save the file as UTF-8.
-
 ## Notes
 
 - Tested and working on Attack Shark V8 with Mouse Firmware version V3.03,
