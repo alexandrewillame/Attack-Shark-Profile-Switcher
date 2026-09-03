@@ -99,7 +99,7 @@ function New-AppShortcut {
     if (-not (Test-Path $runNow)) {
         throw "run_now.bat not found in $here"
     }
-    $iconPath = Join-Path $here 'assets' 'logo.ico'
+    $iconPath = Join-Path $here 'assets\logo.ico'
     $shortcutPath = Join-Path $FolderPath 'Attack Shark Profile Switcher.lnk'
     $wshShell = New-Object -ComObject WScript.Shell
     $shortcut = $wshShell.CreateShortcut($shortcutPath)
